@@ -116,7 +116,7 @@ def read_municipal_data(path, municipality_name_key=['organization','name'], act
           
     return nodes, links, municipality_name
 
-def construct_network(nodes, links, municipality_name, save_path=''):
+def construct_network(nodes, links, municipality_name, save_path_base=''):
     """
     Constructs a networkx graph object from given nodes and links and saves it to a file if wanted.
 
@@ -125,7 +125,7 @@ def construct_network(nodes, links, municipality_name, save_path=''):
     nodes: list of dictionaries in format {node_id:{attribute_name:attribute_value}}
     links: list in edge list format (list of pairs of nodes)
     municipality_name: str, name of the municipality, used for saving the network
-    save_path: str, path to which save the network
+    save_path_base: str, base path to which save the network
 
     Returns:
     --------
@@ -143,7 +143,7 @@ def construct_network(nodes, links, municipality_name, save_path=''):
         for attribute in node_attributes:
             G.nodes[node_id][attribute] = node_attributes[attribute]
     if save_path:
-        save_path = save_path + '/' + municipality_name + '.edg'
+        save_path = save_path_base + '/' + municipality_name + '.edg'
         nx.write_weighted_edgelist(G, save_path)
     return G
 
