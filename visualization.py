@@ -1,6 +1,6 @@
 # functions for visualization
 
-import matplotlib as plt
+import matplotlib.pylab as plt
 import networkx as nx
 
 from collections import Counter
@@ -38,18 +38,18 @@ def draw_network(G, node_type_key='node_type', node_colors={}, node_markers={}, 
     for node_type in node_types:
         nodes_to_add = []
         for node in nodes:
-            if node[node_type_key] == node_type:
-                nodes_to_add.append(node)
-        nx.draw_networkx_nodes(G, pos, ax=ax, nodelist=nodes_to_add, node_color=node_colors[node_type], node_shape=node_markers[node_type], node_size=node_size,label=node_type)
+            if node[1][node_type_key] == node_type:
+                nodes_to_add.append(node[0])
+        nx.draw_networkx_nodes(G, pos=pos, ax=ax, nodelist=nodes_to_add, node_color=node_colors[node_type], node_shape=node_markers[node_type], node_size=node_size,label=node_type)
     
     # drawing edges
     if edge_width == 'weight':
         edges = list(G.edges())
-        weights = [G[edge[0]],G[edge[1]]['weight'] for edge in edges]
+        weights = [G[edge[0]][edge[1]]['weight'] for edge in edges]
         nx.draw_networkx_edges(G, pos=pos, edgelist=edges, width=weights, alpha=edge_alpha)
     else:
         edges = list(G.edges())
-        nx.draw_networks_edges(G, pos=pos, edgelist=edges, width=edge_width, alpha=edge_alpha)
+        nx.draw_networkx_edges(G, pos=pos, edgelist=edges, width=edge_width, alpha=edge_alpha)
 
     # saving network
     if save_path_base:

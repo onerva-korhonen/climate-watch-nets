@@ -138,9 +138,9 @@ def read_municipality_data(path, municipality_name_key=['organization','name'], 
           
     return nodes, links, municipality_name
 
-def construct_network(nodes, links, municipality_name, save_path_base=''):
+def construct_network(nodes, links, municipality_name='', save_path_base=''):
     """
-    Constructs a networkx graph object from given nodes and links and saves it to a file if wanted.
+    Constructs a networkx graph object from given nodes and links and saves it to a file if wanted. Note that the current version saves the network as an edgelist that doesn't preserve node attributes.
 
     Parameters:
     -----------
@@ -164,10 +164,12 @@ def construct_network(nodes, links, municipality_name, save_path_base=''):
         node_attributes = node[node_id]
         for attribute in node_attributes:
             G.nodes[node_id][attribute] = node_attributes[attribute]
+    # TODO: .edg doesn't preserve node attributes; consider saving as pickle in networkx 3
     if save_path_base:
         save_path = save_path_base + '/' + municipality_name + '.edg'
-        nx.write_weighted_edgelist(G, save_path)
+        nx.write_edg(G, save_path)
     return G
+
 
 
 
