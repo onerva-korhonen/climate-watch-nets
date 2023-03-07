@@ -26,6 +26,5 @@ indicator_to_indicator_link_key = params.indicator_to_indicator_link_key
 indicator_neighbour_key = params.indicator_neighbour_key
 
 for municipality_tag in municipality_tags:
-    path = path_base + '/' + municipality_tag + '.json'
-    nodes,links,_ = nc.read_municipality_data(path, municipality_name_key=municipality_name_key, action_key=action_key, action_attributes=action_attributes, indicator_level_key=indicator_level_key, indicator_type_key=indicator_type_key, indicator_key=indicator_key, indicator_attributes=indicator_attributes, action_to_indicator_link_key=action_to_indicator_link_key, action_neighbour_key= action_neighbour_key, indicator_to_indicator_link_key=indicator_to_indicator_link_key, indicator_neighbour_key=indicator_neighbour_key)
+    nodes,links,_ = nc.read_municipality_data(path_base, municipality_tag, municipality_name_key=municipality_name_key, action_key=action_key, action_attributes=action_attributes, indicator_level_key=indicator_level_key, indicator_type_key=indicator_type_key, indicator_key=indicator_key, indicator_attributes=indicator_attributes, action_to_indicator_link_key=action_to_indicator_link_key, action_neighbour_key= action_neighbour_key, indicator_to_indicator_link_key=indicator_to_indicator_link_key, indicator_neighbour_key=indicator_neighbour_key)
     _ = nc.construct_network(nodes, links, municipality_tag, save_path_base=path_base)
