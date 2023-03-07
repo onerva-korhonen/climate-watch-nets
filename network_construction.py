@@ -61,6 +61,7 @@ def read_municipality_data(base_path, municipality_tag, municipality_name_key=['
     municipality_names = []
     nodes = []
     links = []
+    node_ids = []
 
     for municipality_tag in municipality_tags:
         path = base_path + '/' + municipality_tag + '.json'
@@ -90,6 +91,7 @@ def read_municipality_data(base_path, municipality_tag, municipality_name_key=['
             n_a2a = 0
             for action in actions:
                 aid = action['id']
+                node_ids.append(aid)
                 node_attributes = {action_attribute:action[action_attribute] for action_attribute in action_attributes}
                 node_attributes['node_type'] = 'action'
                 nodes.append({aid:node_attributes})
@@ -97,8 +99,8 @@ def read_municipality_data(base_path, municipality_tag, municipality_name_key=['
                 if a2a_links:
                     neighbours = action[action_to_action_link_key]
                     for neighbour in neighbours:
-                        if (aid,neighbour['id']) not in links and (neighbour['id'],aid) not in links:
-                            links.append((action['id'],neighbour['id']))
+                        if (aid,neighbour['id']) not in links:
+                            links.append((aid,neighbour['id']))
                             n_a2a += 1
             print('{} actions found'.format(len(actions)))
             if a2a_links:
@@ -107,7 +109,7 @@ def read_municipality_data(base_path, municipality_tag, municipality_name_key=['
                 print('No links from actions to actions found, check action to action link key!')
         else:
             print('No actions found, check the action key!')
-
+        
         if indicator_level_key in data.keys():
             indicators = data[indicator_level_key]
             print('{} indicators found'.format(len(indicators)))
@@ -123,6 +125,7 @@ def read_municipality_data(base_path, municipality_tag, municipality_name_key=['
                         node_type = 'indicator'
                     indicator = indicator[indicator_key]
                     iid = indicator['id']
+                    node_ids.append(iid)
                     node_attributes = {indicator_attribute:indicator[indicator_attribute] for indicator_attribute in indicator_attributes}
                     node_attributes['node_type'] = node_type
                     nodes.append({iid:node_attributes})
@@ -148,6 +151,11 @@ def read_municipality_data(base_path, municipality_tag, municipality_name_key=['
         else:
             print('No indicators found, check the indicator key!')
     
+    for link in links:
+        if link[0] not in node_ids or link[1] not in node_ids:
+            links.remove(link)
+            print('Detected link {} with endpoint node(s) outside of the data. Check if the data is linked to another Watch instance.'.format(link))
+
     municipality_names = set(municipality_names)
     if len(municipality_names) > 1:
         municipality_name = '+'.join(municipality_names)

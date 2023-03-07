@@ -42,10 +42,10 @@ edge_width = params.edge_width
 edge_alpha = params.edge_alpha
 
 save_path_base = params.save_path_base
-network_vis_save_name = params.network_vis_save_name
+network_vis_save_base = params.network_vis_save_name
 
 for municipality_tag in municipality_tags:
     nodes,links,_ = nc.read_municipality_data(data_folder, municipality_tag, municipality_name_key=municipality_name_key, action_key=action_key, action_attributes=action_attributes, indicator_level_key=indicator_level_key, indicator_type_key=indicator_type_key, indicator_key=indicator_key, indicator_attributes=indicator_attributes, action_to_indicator_link_key=action_to_indicator_link_key, action_neighbour_key= action_neighbour_key, indicator_to_indicator_link_key=indicator_to_indicator_link_key, indicator_neighbour_key=indicator_neighbour_key)
     G = nc.construct_network(nodes, links, municipality_tag)
-    network_vis_save_name = network_vis_save_name + '_' + municipality_tag + '.pdf'
+    network_vis_save_name = network_vis_save_base + '_' + municipality_tag + '.pdf'
     vis.draw_network(G, node_type_key=node_type_key, node_colors=node_colors, node_markers=node_markers, node_size=node_size, edge_width=edge_width, edge_alpha=edge_alpha, save_path_base=save_path_base, save_name=network_vis_save_name)

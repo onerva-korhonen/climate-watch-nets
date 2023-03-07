@@ -2,7 +2,7 @@
 
 # data and network construction
 data_folder = '/home/onerva/projects/climate_watch/data'
-municipality_tags = ['helsinki-kierto', 'helsinki-kierto-2023','espoo-ilmasto','tampere-ilmasto+tampere-lumo','lpr-ilmasto','lpr-kierto','lahti-ilmasto','akaa-ilmasto','valkeakoski-ilmasto','palkane-ilmasto','urjala-ilmasto','hame-ilmasto','hsy-kestava','aanekoski-yio','viitasaari-ilmasto','leichlingen-klima','stpaul-carp','boroondara-cap','indigoshire-erp']
+municipality_tags = ['helsinki-kierto', 'helsinki-kierto-2023','espoo-ilmasto','tampere-ilmasto+tampere-lumo','lpr-ilmasto+lpr-kierto','lahti-ilmasto','akaa-ilmasto','valkeakoski-ilmasto','palkane-ilmasto','urjala-ilmasto','hame-ilmasto','hsy-kestava','aanekoski-yio','viitasaari-ilmasto','leichlingen-klima','stpaul-carp','boroondara-cap','indigoshire-erp']
 municipality_name_key = ['organization','name']
 action_key = 'actions'
 action_attributes = ['name','description','schedule','implementationPhase','responsibleParties','categories','contactPersons','updatedAt']
