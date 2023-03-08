@@ -20,7 +20,8 @@ vis = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(vis)
 
 data_folder = params.data_folder
-municipality_tags = params.municipality_tags
+#municipality_tags = params.municipality_tags
+municipality_tags = ['helsinki-kierto']
 municipality_name_key = params.municipality_name_key
 action_key = params.action_key
 action_attributes = params.action_attributes

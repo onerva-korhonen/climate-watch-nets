@@ -5,6 +5,13 @@ import networkx as nx
 
 from collections import Counter
 
+import importlib.util
+
+spec = importlib.util.spec_from_file_location('network_analysis','/home/onerva/projects/climate_watch/climate-watch-nets/network_analysis.py')
+network_analysis = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(network_analysis)
+
+
 def draw_network(G, node_type_key='node_type', node_colors={}, node_markers={}, node_size=50, edge_width=1, edge_alpha=0.5, save_path_base='', save_name=''):
     """
     Visualizes the network and saves the plot as pdf. If save path is not given, the figure is shown instead of saving.
@@ -36,10 +43,10 @@ def draw_network(G, node_type_key='node_type', node_colors={}, node_markers={}, 
     
     # drawing nodes of each type separately
     for node_type in node_types:
-        nodes_to_add = []
-        for node in nodes:
-            if node[1][node_type_key] == node_type:
-                nodes_to_add.append(node[0])
+        nodes_to_add = network_analysis.get_nodes_per_type(G, node_type, node_type_key)
+        #for node in nodes:
+        #    if node[1][node_type_key] == node_type:
+        #        nodes_to_add.append(node[0])
         nx.draw_networkx_nodes(G, pos=pos, ax=ax, nodelist=nodes_to_add, node_color=node_colors[node_type], node_shape=node_markers[node_type], node_size=node_size,label=node_type)
     
     # drawing edges
