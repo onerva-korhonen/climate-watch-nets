@@ -68,6 +68,58 @@ def draw_network(G, node_type_key='node_type', node_colors={}, node_markers={}, 
         plt.show()
         plt.close()
 
+def plot_curves(data, normalize=False, labels=[], colors='b', markers='', line_style='-', line_width=1.5, alpha=0.5, save_path=''):
+    """
+    Plots the given distributions and saves them into a .pdf file
+
+    Parameters:
+    -----------
+    data: list of tuples of lists, each tuple containing the lists of x and y values to plot
+    normalize: if true, x values are normalized by their maximum before plotting.
+    labels: list, labels for each curve to be plotted
+    colors: str or list, color for each curve to be plotted
+    markers: str or list, data point markers of each curve to be plotted
+    line_style: str, line style of the curves
+    line_width: float, line widht of the curves
+    alpha: float, transparency of the visualization
+    save_path: str, path to which to save the figure
+
+    Returns:
+    --------
+    No direct output, saves the curves in a pdf file
+    """
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    if not isinstance(colors, list):
+        colors = [colors for i in range(len(data))]
+    if not isinstance(markers, list):
+        markers = [markers for i in range(len(data))]
+
+    assert len(colors) == len(data), "Length of colors list don't match length of data, please check or give a scalar value"
+    assert len(markers) == len(data), "Length of markers list don't match length of data, please check or give a scalar value"
+
+    if len(labels) > 0:
+        if not isinstance(labels, list):
+            labels = [labels for i in range(len(data))]
+        assert len(labels) == len(data), "Length of labels list don't match length of data, please check"
+        for (x, y), label, color, marker in zip(data, labels, colors, markers):
+            if normalize:
+                x = x/max(x)
+            plt.plot(x, y, label=label, color=color, marker=marker, linestyle=line_style, linewidth=line_width, alpha=alpha)
+            plt.legend()
+    else:
+        for (x, y), color, marker in zip(data, colors, markers):
+            if normalize:
+                x = x/max(x)
+            plt.plot(x, y, color=color, marker=marker, linestyle=line_style, linewidth=line_width, alpha=alpha)
+
+    if save_path:
+        plt.savefig(save_path, format='pdf', bbox_inches='tight')
+        plt.close()
+    else:
+        plt.show()
+        plt.close()
 
 
 

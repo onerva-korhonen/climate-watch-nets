@@ -15,13 +15,17 @@ spec = importlib.util.spec_from_file_location('network_construction','/home/oner
 nc = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(nc)
 
+spec = importlib.util.spec_from_file_location('network_analysis','/home/onerva/projects/climate_watch/climate-watch-nets/network_analysis.py')
+na = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(na)
+
 spec = importlib.util.spec_from_file_location('visualization','/home/onerva/projects/climate_watch/climate-watch-nets/visualization.py')
 vis = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(vis)
 
 data_folder = params.data_folder
-#municipality_tags = params.municipality_tags
-municipality_tags = ['helsinki-kierto']
+municipality_tags = params.municipality_tags
+#municipality_tags = ['helsinki-kierto']
 municipality_name_key = params.municipality_name_key
 action_key = params.action_key
 action_attributes = params.action_attributes
@@ -36,17 +40,38 @@ indicator_to_indicator_link_key = params.indicator_to_indicator_link_key
 indicator_neighbour_key = params.indicator_neighbour_key
 
 node_type_key = params.node_type_key
+node_types = params.node_types
+nbins = params.nbins
+
 node_colors = params.node_colors
 node_markers = params.node_markers
 node_size = params.node_size
 edge_width = params.edge_width
 edge_alpha = params.edge_alpha
+line_style = params.line_style
+line_width = params.line_width
+distribution_alpha = params.distribution_alpha
 
 save_path_base = params.save_path_base
 network_vis_save_base = params.network_vis_save_name
+degree_dists_save_base = params.degree_dists_save_name
+
+degree_dists_per_node_type = [[] for node_type in node_types]
 
 for municipality_tag in municipality_tags:
     nodes,links,_ = nc.read_municipality_data(data_folder, municipality_tag, municipality_name_key=municipality_name_key, action_key=action_key, action_attributes=action_attributes, indicator_level_key=indicator_level_key, indicator_type_key=indicator_type_key, indicator_key=indicator_key, indicator_attributes=indicator_attributes, action_to_indicator_link_key=action_to_indicator_link_key, action_neighbour_key= action_neighbour_key, indicator_to_indicator_link_key=indicator_to_indicator_link_key, indicator_neighbour_key=indicator_neighbour_key)
     G = nc.construct_network(nodes, links, municipality_tag)
     network_vis_save_name = network_vis_save_base + '_' + municipality_tag + '.pdf'
     vis.draw_network(G, node_type_key=node_type_key, node_colors=node_colors, node_markers=node_markers, node_size=node_size, edge_width=edge_width, edge_alpha=edge_alpha, save_path_base=save_path_base, save_name=network_vis_save_name)
+    degree_dists = na.calculate_degree_distributions(G, node_types, node_type_key, nbins)
+    for degree_dist_per_node_type, degree_dist in zip(degree_dists_per_node_type, degree_dists):
+        if len(degree_dist[0]) > 0:
+            degree_dist_per_node_type.append(degree_dist)
+
+for degree_dist_per_node_type, node_type in zip(degree_dists_per_node_type, node_types):
+    if len(degree_dist_per_node_type) > 0:
+        save_path = save_path_base + '/' + degree_dists_save_base + '_' + node_type + '.pdf'
+        vis.plot_curves(degree_dist_per_node_type, normalize=False, colors=node_colors[node_type], line_style=line_style, line_width=line_width, alpha=distribution_alpha, save_path=save_path)
+        # re-plotting degree distributions with normalized x axis. Note that for municipalities where all nodes have degree 0, this leads to negative x values
+        save_path = save_path_base + '/' + degree_dists_save_base + '_' + node_type + '_normalized.pdf'
+        vis.plot_curves(degree_dist_per_node_type, normalize=True, colors=node_colors[node_type], line_style=line_style, line_width=line_width, alpha=distribution_alpha, save_path=save_path)
