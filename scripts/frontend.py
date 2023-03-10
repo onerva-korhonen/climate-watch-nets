@@ -42,6 +42,8 @@ indicator_neighbour_key = params.indicator_neighbour_key
 node_type_key = params.node_type_key
 node_types = params.node_types
 nbins = params.nbins
+n_type_histogram_bins = params.n_type_histogram_bins
+node_and_link_type_histogram_bin_type = params.node_and_link_type_histogram_bin_type
 
 node_colors = params.node_colors
 node_markers = params.node_markers
@@ -51,12 +53,16 @@ edge_alpha = params.edge_alpha
 line_style = params.line_style
 line_width = params.line_width
 distribution_alpha = params.distribution_alpha
+hist_bar_width = params.hist_bar_width
 
 save_path_base = params.save_path_base
 network_vis_save_base = params.network_vis_save_name
 degree_dists_save_base = params.degree_dists_save_name
+node_and_link_type_histograms_save_base = params.node_and_link_type_histograms_save_name
 
 degree_dists_per_node_type = [[] for node_type in node_types]
+
+counts = {}
 
 for municipality_tag in municipality_tags:
     nodes,links,_ = nc.read_municipality_data(data_folder, municipality_tag, municipality_name_key=municipality_name_key, action_key=action_key, action_attributes=action_attributes, indicator_level_key=indicator_level_key, indicator_type_key=indicator_type_key, indicator_key=indicator_key, indicator_attributes=indicator_attributes, action_to_indicator_link_key=action_to_indicator_link_key, action_neighbour_key= action_neighbour_key, indicator_to_indicator_link_key=indicator_to_indicator_link_key, indicator_neighbour_key=indicator_neighbour_key)
@@ -67,11 +73,19 @@ for municipality_tag in municipality_tags:
     for degree_dist_per_node_type, degree_dist in zip(degree_dists_per_node_type, degree_dists):
         if len(degree_dist[0]) > 0:
             degree_dist_per_node_type.append(degree_dist)
+    count = na.count_node_and_link_types(G, node_types, node_type_key)
+    for key in count:
+        if key in counts.keys():
+            counts[key].append(count[key])
+        else:
+            counts[key] = [count[key]]
 
 for degree_dist_per_node_type, node_type in zip(degree_dists_per_node_type, node_types):
     if len(degree_dist_per_node_type) > 0:
         save_path = save_path_base + '/' + degree_dists_save_base + '_' + node_type + '.pdf'
-        vis.plot_curves(degree_dist_per_node_type, normalize=False, colors=node_colors[node_type], line_style=line_style, line_width=line_width, alpha=distribution_alpha, save_path=save_path)
+        vis.plot_curves(degree_dist_per_node_type, normalize=False, x_label='Degree', y_label='PDF', colors=node_colors[node_type], line_style=line_style, line_width=line_width, alpha=distribution_alpha, save_path=save_path)
         # re-plotting degree distributions with normalized x axis. Note that for municipalities where all nodes have degree 0, this leads to negative x values
         save_path = save_path_base + '/' + degree_dists_save_base + '_' + node_type + '_normalized.pdf'
-        vis.plot_curves(degree_dist_per_node_type, normalize=True, colors=node_colors[node_type], line_style=line_style, line_width=line_width, alpha=distribution_alpha, save_path=save_path)
+        vis.plot_curves(degree_dist_per_node_type, normalize=True, x_label='Degree', y_label='PDF', colors=node_colors[node_type], line_style=line_style, line_width=line_width, alpha=distribution_alpha, save_path=save_path)
+
+vis.visualize_node_and_link_type_count(counts, bin_type=node_and_link_type_histogram_bin_type, nbins=n_type_histogram_bins, bar_width=hist_bar_width, save_path_base=save_path_base, save_name=node_and_link_type_histograms_save_base)

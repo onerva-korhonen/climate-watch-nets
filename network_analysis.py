@@ -53,6 +53,42 @@ def get_nodes_per_type(G, node_type, node_type_key):
                 nodes.append(node[0])
     return nodes
 
+def count_node_and_link_types(G, node_types, node_type_key):
+    """
+    Calculates the amount of nodes of different types and links between them.
+
+    Parameters:
+    -----------
+    G: nx.Graph(), a network
+    node_types: list of strs, types of nodes for which to calculate the degree distribution
+    node_type_key: str, key under which the attribute node type is stored in G.nodes
+
+    Returns:
+    --------
+    count: dict, number of nodes of different types and links between them
+    """
+    link_types = []
+    for i in range(len(node_types)):
+        for j in range(i,len(node_types)):
+            link_types.append(node_types[i] + '-' + node_types[j])
+    types = node_types + link_types
+    count = {t:0 for t in types}
+    nodes = G.nodes(data=True)
+    links = G.edges()
+    for node in nodes:
+        node_type = node[1][node_type_key]
+        assert node_type in count.keys(), 'Detected unlisted node type {}'.format(node_type)
+        count[node_type] += 1
+    for link in links:
+        start_node_type = nodes[link[0]][node_type_key]
+        end_node_type = nodes[link[1]][node_type_key]
+        assert start_node_type + '-' + end_node_type in count.keys() or end_node_type + '-' + start_node_type in count.keys(), 'Detected unlisted link type {}'.format(start_node_type + '-' + end_node_type)
+        if start_node_type + '-' + end_node_type in count.keys():
+            count[start_node_type + '-' + end_node_type] += 1
+        else:
+            count[end_node_type + '-' + start_node_type] += 1
+    return count
+
 # Accessories
 
 def get_distribution(data, nbins):
@@ -74,3 +110,46 @@ def get_distribution(data, nbins):
     bin_centers = 0.5*(bin_edges[:-1]+bin_edges[1:])
 
     return pdf, bin_centers
+
+def get_log_bins(min_value, max_value, nbins):
+    """
+    Creates a set of logarithmic bins
+
+    Parameters:
+    -----------
+    min_value: dbl, minimum value of the data to be binned
+    max_value: dbl, maximum value of the data to be binned
+    nbins: int, number of bins
+
+    Returns:
+    --------
+    bins: list of dbl, bin edges
+    """
+    multiplier = get_log_bins_multiplier(min_value, max_value, nbins)
+    bins = [min_value]
+    cur_value = bins[0]
+    while cur_value < max_value:
+        cur_value = cur_value * multiplier
+        bins.append(cur_value)
+    return bins
+
+def get_log_bins_multiplier(min_value, max_value, nbins):
+    """
+    Calculates the multiplier for getting a given number of logarithmic
+    bins between the given minimum and maximum values.
+
+    Parameters:
+    -----------
+    min_value: dbl, minimum value of the data to be binned
+    max_value: dbl, maximum value of the data to be binned
+    nbins: int, number of bins
+
+    Returns:
+    --------
+    multiplier: dbl, the multiplier for obtaining the logarithmic bins
+    """
+    assert min_value != 0, '0 given as minimum value for logarithmic bins. Please fix the value.'
+    multiplier = np.exp((np.log(max_value/min_value))/nbins)
+    return multiplier
+
+

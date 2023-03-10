@@ -20,6 +20,8 @@ indicator_neighbour_key ='causalIndicator'
 node_type_key = 'node_type'
 node_types = ['action', 'indicator_OPERATIONAL', 'indicator_TACTICAL', 'indicator_STRATEGIC', 'indicator']
 nbins = 5
+n_type_histogram_bins = 10
+node_and_link_type_histogram_bin_type = 'logarithmic'
 
 # visualization
 node_colors = {'action':'b','indicator_OPERATIONAL':'g','indicator_TACTICAL':'c','indicator_STRATEGIC':'m','indicator':'k'}
@@ -30,7 +32,9 @@ edge_alpha = 0.5
 line_style = '-'
 line_width = '1.5'
 distribution_alpha = 0.5
+hist_bar_width = 0.75
 
 save_path_base = '/home/onerva/projects/climate_watch/results/'
 network_vis_save_name = 'network'
 degree_dists_save_name = 'degree_distributions'
+node_and_link_type_histograms_save_name = 'type_histogram'
