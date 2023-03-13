@@ -26,9 +26,10 @@ node_and_link_type_histogram_bin_type = 'logarithmic'
 # visualization
 node_colors = {'action':'b','indicator_OPERATIONAL':'g','indicator_TACTICAL':'c','indicator_STRATEGIC':'m','indicator':'k'}
 node_markers = {'action':'o','indicator_OPERATIONAL':'s','indicator_TACTICAL':'d','indicator_STRATEGIC':'*','indicator':'.'}
-node_size = 50
-edge_width = 1
+node_size = 15
+edge_width = 0.7
 edge_alpha = 0.5
+arrow_size = 5
 line_style = '-'
 line_width = '1.5'
 distribution_alpha = 0.5

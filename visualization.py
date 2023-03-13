@@ -5,6 +5,7 @@ import networkx as nx
 import numpy as np
 
 from collections import Counter
+from networkx.drawing.nx_agraph import graphviz_layout
 
 import importlib.util
 
@@ -13,7 +14,7 @@ network_analysis = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(network_analysis)
 
 
-def draw_network(G, node_type_key='node_type', node_colors={}, node_markers={}, node_size=50, edge_width=1, edge_alpha=0.5, save_path_base='', save_name=''):
+def draw_network(G, node_type_key='node_type', node_colors={}, node_markers={}, node_size=50, edge_width=1, edge_alpha=0.5, arrow_size=5, save_path_base='', save_name=''):
     """
     Visualizes the network and saves the plot as pdf. If save path is not given, the figure is shown instead of saving.
 
@@ -26,6 +27,7 @@ def draw_network(G, node_type_key='node_type', node_colors={}, node_markers={}, 
     node_size: scalar, node size in the visualization
     edge_widht: dbl or str, width of network edges, set to 'weight' to use individual edge weights
     edge_alpha: dbl, opacity of edges
+    arrow_size: int, size of the arrowheads in the visualization
     save_path_base: str, a base path (e.g. to a shared folder) for saving figures
     save_name: str, name of the file where to save the network visualization
 
@@ -36,7 +38,7 @@ def draw_network(G, node_type_key='node_type', node_colors={}, node_markers={}, 
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
-    pos = nx.spring_layout(G)
+    pos = graphviz_layout(G, prog='dot')
     nodes = G.nodes(data=True)
     # reading node types
     assert Counter(node_colors.keys()) == Counter(node_markers.keys()), "Node color and marker keys don't match, check the keys!"
@@ -57,7 +59,7 @@ def draw_network(G, node_type_key='node_type', node_colors={}, node_markers={}, 
         nx.draw_networkx_edges(G, pos=pos, edgelist=edges, width=weights, alpha=edge_alpha)
     else:
         edges = list(G.edges())
-        nx.draw_networkx_edges(G, pos=pos, edgelist=edges, width=edge_width, alpha=edge_alpha)
+        nx.draw_networkx_edges(G, pos=pos, edgelist=edges, width=edge_width, alpha=edge_alpha, arrowsize=arrow_size)
 
     # saving network
     if save_path_base:
