@@ -19,11 +19,14 @@ indicator_neighbour_key ='causalIndicator'
 # network analysis
 node_type_key = 'node_type'
 node_types = ['action', 'indicator_OPERATIONAL', 'indicator_TACTICAL', 'indicator_STRATEGIC', 'indicator']
+projection_graph_spanning_node_types = ['action']
 nbins = 5
 n_type_histogram_bins = 10
 node_and_link_type_histogram_bin_type = 'logarithmic'
 
 # visualization
+full_network_layout = 'graphviz'
+projection_graph_layout = 'graphviz'
 node_colors = {'action':'b','indicator_OPERATIONAL':'g','indicator_TACTICAL':'c','indicator_STRATEGIC':'m','indicator':'k'}
 node_markers = {'action':'o','indicator_OPERATIONAL':'s','indicator_TACTICAL':'d','indicator_STRATEGIC':'*','indicator':'.'}
 node_size = 15
@@ -39,3 +42,4 @@ save_path_base = '/home/onerva/projects/climate_watch/results/'
 network_vis_save_name = 'network'
 degree_dists_save_name = 'degree_distributions'
 node_and_link_type_histograms_save_name = 'type_histogram'
+projection_graph_vis_save_name = 'projection-graph'

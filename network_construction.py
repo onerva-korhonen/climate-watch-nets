@@ -196,6 +196,43 @@ def construct_network(nodes, links, municipality_name='', save_path_base=''):
         nx.write_edg(G, save_path)
     return G
 
+def create_projection_graph(G, spanning_node_type, node_type_key, save_path_base='', save_name=''):
+    """
+    Creates the projection graph of given node type. A projection
+    graph contains all nodes of the given type and all links between
+    them. Further, nodes that contribute to a shared higher-level
+    target are connected in the projection graph. If a save path is
+    given, the projection graph is also saved as .edg.
 
+    Parameters:
+    -----------
+    G: nx.Graph(), a network
+    spanning_node_type: str, type of nodes that form the projection graph
+    node_type_key: str, key under which the attribute node type is stored in G.nodes
+    save_path_base: str, a base path (e.g. to a shared folder) for saving figures
+    save_name: str, name of the file where to save the network visualization
+
+    Returns:
+    --------
+    P: nx.Graph(), the projection graph
+    """
+    G = G.to_undirected() # the projection graph is undirected
+    original_nodes = G.nodes(data=True)
+    spanning_nodes = [node[0] for node in original_nodes if node[1][node_type_key] == spanning_node_type]
+    P = nx.Graph(G.subgraph(spanning_nodes)) # at this point, P contains all spanning nodes and original links between them
+    # adding links between spanning nodes contributing to a shared target
+    for i in range(len(spanning_nodes)):
+        for j in range(i+1, len(spanning_nodes)):
+            if len(sorted(nx.common_neighbors(G, spanning_nodes[i], spanning_nodes[j]))) > 0: # sorted is needed to form a list; common_neighbors returns an iterator
+                    P.add_edge(spanning_nodes[i], spanning_nodes[j])
+    if save_path_base:
+        assert len(save_name) > 0,'Give a file name for saving the projection graph!'
+        save_path = save_path_base + '/' + save_name
+        nx.write_edg(P, save_path)
+    return P
+
+
+
+    
 
 

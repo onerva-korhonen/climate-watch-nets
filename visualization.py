@@ -14,7 +14,7 @@ network_analysis = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(network_analysis)
 
 
-def draw_network(G, node_type_key='node_type', node_colors={}, node_markers={}, node_size=50, edge_width=1, edge_alpha=0.5, arrow_size=5, save_path_base='', save_name=''):
+def draw_network(G, node_type_key='node_type', layout='graphviz', node_colors={}, node_markers={}, node_size=50, edge_width=1, edge_alpha=0.5, arrow_size=5, save_path_base='', save_name=''):
     """
     Visualizes the network and saves the plot as pdf. If save path is not given, the figure is shown instead of saving.
 
@@ -22,6 +22,7 @@ def draw_network(G, node_type_key='node_type', node_colors={}, node_markers={}, 
     -----------
     G: networkx.graph(), the network to be visualized
     node_type_key: str, key under which the attribute node type is stored in G.nodes
+    layout: str, layout to be used for visualizing the network (options: 'graphviz', 'spring')
     node_colors: dict, color of each node type (keys: node types)
     node_markers: dict, marker of each node type (keys: node types)
     node_size: scalar, node size in the visualization
@@ -38,7 +39,11 @@ def draw_network(G, node_type_key='node_type', node_colors={}, node_markers={}, 
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
-    pos = graphviz_layout(G, prog='dot')
+    assert layout in ['graphviz','spring'],"Check graph layout, options: 'graphviz','spring'"
+    if layout == 'graphviz':
+        pos = graphviz_layout(G, prog='dot')
+    elif layout == 'spring':
+        pos = nx.spring_layout(G)
     nodes = G.nodes(data=True)
     # reading node types
     assert Counter(node_colors.keys()) == Counter(node_markers.keys()), "Node color and marker keys don't match, check the keys!"
