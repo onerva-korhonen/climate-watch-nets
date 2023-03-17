@@ -89,6 +89,23 @@ def count_node_and_link_types(G, node_types, node_type_key):
             count[end_node_type + '-' + start_node_type] += 1
     return count
 
+def calculate_density_without_linkless_nodes(G):
+    """
+    Calculates the density of the subgraph induced by nodes that have at least one neighbour.
+
+    Parameters:
+    -----------
+    G: nx.Graph(), a network
+
+    Returns:
+    --------
+    density: float
+    """
+    spanning_nodes = [node for node in G.nodes() if nx.degree(G, node)>0]
+    P = G.subgraph(spanning_nodes)
+    density = nx.density(P)
+    return density
+
 # Accessories
 
 def get_distribution(data, nbins):

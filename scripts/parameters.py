@@ -20,9 +20,12 @@ indicator_neighbour_key ='causalIndicator'
 node_type_key = 'node_type'
 node_types = ['action', 'indicator_OPERATIONAL', 'indicator_TACTICAL', 'indicator_STRATEGIC', 'indicator']
 projection_graph_spanning_node_types = ['action']
-nbins = 5
+n_degree_bins = 5
 n_type_histogram_bins = 10
+n_projection_graph_density_bins = 5
 node_and_link_type_histogram_bin_type = 'logarithmic'
+projection_graph_density_bin_type = 'linear'
+
 
 # visualization
 full_network_layout = 'graphviz'
@@ -43,3 +46,4 @@ network_vis_save_name = 'network'
 degree_dists_save_name = 'degree_distributions'
 node_and_link_type_histograms_save_name = 'type_histogram'
 projection_graph_vis_save_name = 'projection-graph'
+projection_graph_density_histogram_save_name = 'projection_graph_density'
